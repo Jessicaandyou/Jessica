@@ -181,8 +181,10 @@ app.post('/newPicture', ensureLoggedIn, function (req, res) {
       , description: req.body.description
     }).save(f.slot())
   }, function (collection, picture) {
-    collection.pictures.push(picture)
-    collection.save(f.slot())
+    if(collection) {
+      collection.pictures.push(picture)
+      collection.save(f.slot())
+    }
   }, function () {
     res.redirect('/admin')
   })
