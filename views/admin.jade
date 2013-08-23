@@ -1,0 +1,16 @@
+!!!5
+html
+  head
+    title Jessica Frankl
+    link(rel='stylesheet', href='/style.css')
+    link(rel='stylesheet', href='/admin.css')
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+  body
+    h1 admin
+    ul
+    each collection in collections
+      li #{collection.name}
+        ul
+        each picture in collection.pictures
+          li #{picture.link}
+

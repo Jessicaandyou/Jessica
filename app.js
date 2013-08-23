@@ -10,66 +10,66 @@ var express = require("express")
 /////////////////////////////////////////////////////////////////////
 //database stuff
 /////////////////////////////////////////////////////////////////////
-// var uristring = 
-//   process.env.MONGOLAB_URI || 
-//   process.env.MONGOHQ_URL || 
-//   'mongodb://localhost/'
+var uristring = 
+  process.env.MONGOLAB_URI || 
+  process.env.MONGOHQ_URL || 
+  'mongodb://localhost/'
 
-// var theport = process.env.PORT || 5000;
+var theport = process.env.PORT || 5000;
 
-// mongoose.connect(uristring, function (err, res) {
-//   if (err) { 
-//     console.log ('ERROR connecting to: ' + uristring + '. ' + err);
-//   } else {
-//     console.log ('Succeeded connected to: ' + uristring);
-//   }
-// });
-
+mongoose.connect(uristring, function (err, res) {
+  if (err) { 
+    console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+  } else {
+    console.log ('Succeeded connected to: ' + uristring);
+  }
+});
 
 /////////////////////////////////////////////////////////////////////
 //schemas
 /////////////////////////////////////////////////////////////////////
-// var userSchema = new mongoose.Schema({
-//     username: { type: String, required: true, index: { unique: true } }
-//   , password: { type: String, required: true }
-// })
-// userSchema.pre('save', function (next) {
-//   var user = this
+var collectionSchema = new mongoose.Schema({
+    name: { type: String, required: true }
+  , description: String
+  , pictures: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Picture' }]
+})
+var Collection = mongoose.model('Collection', collectionSchema)
 
-//   if(!user.isModified('password')) return next()
+var pictureSchema = new mongoose.Schema({
+    url: { type: String, required: true }
+  , description: String
+})
+var Picture = mongoose.model('Picture', pictureSchema)
 
-//   bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-//     if(err) return next(err)
+var userSchema = new mongoose.Schema({
+    username: { type: String, required: true, index: { unique: true } }
+  , password: { type: String, required: true }
+})
+userSchema.pre('save', function (next) {
+  var user = this
 
-//     bcrypt.hash(user.password, salt, function (err, hash) {
-//       if(err) return next(err)
+  if(!user.isModified('password')) return next()
 
-//       user.password = hash
-//       next()
-//     })
-//   })
-// })
-// userSchema.methods.comparePassword = function (candidatePassword, cb) {
-//   bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
-//     if(err) return cb(err)
+  bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+    if(err) return next(err)
 
-//     cb(null, isMatch)
-//   })
-// }
-// var User = mongoose.model('User', userSchema)
+    bcrypt.hash(user.password, salt, function (err, hash) {
+      if(err) return next(err)
 
-// new User({
-//     username: 'david'
-//   , password: '123'
-// }).save()
+      user.password = hash
+      next()
+    })
+  })
+})
+userSchema.methods.comparePassword = function (candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+    if(err) return cb(err)
 
-// var f = ff(function () {
-//   User.find(f.slot())
-// }, function (users) {
-//   console.log('number of users; '+users.length)
-//   console.log(users[0].username)
-//   console.log(users[0].password)
-// })
+    cb(null, isMatch)
+  })
+}
+var User = mongoose.model('User', userSchema)
+
 /////////////////////////////////////////////////////////////////////
 //the app
 /////////////////////////////////////////////////////////////////////
@@ -89,59 +89,46 @@ app.use(express.logger())
     , compile: compile
   }))
   .use(express.static(__dirname+'/public'))
-  // .use(express.cookieParser())
+  .use(express.cookieParser())
   .use(express.bodyParser())
-  // .use(express.session({ secret: 'wut am i doing' }))
-  // .use(passport.initialize())
-  // .use(passport.session())
+  .use(express.session({ secret: 'wut am i doing' }))
+  .use(passport.initialize())
+  .use(passport.session())
 
 /////////////////////////////////////////////////////////////////////
 //authentication
 /////////////////////////////////////////////////////////////////////
-// passport.use(new LocalStrategy(function (username, password, done) {
-//   console.log('\n\n\nin LOCAL Strategy \n\n\n\n\n')
-//   var f = ff(function () {
-//     User.findOne({username: username}, f.slot())
-//   }, function (user) {
-//     if(!user) {
-//       console.log('no user')
-//       return done(null, false)
-//     }
+passport.use(new LocalStrategy(function (username, password, done) {
+  var f = ff(function () {
+    User.findOne({username: username}, f.slot())
+  }, function (user) {
+    if(!user) return done(null, false)
 
-//     user.comparePassword(password, function (err, isMatch) {
-//       if(err) {
-//         console.log('err in comparing password')
-//         return done(err)
-//       }
+    user.comparePassword(password, function (err, isMatch) {
+      if(err) return done(err)
 
-//       if(isMatch) {
-//         console.log('IS MATCH')
-//         return done(null, user)
-//       }
-//       else {
-//         console.log('IS NOT MATCH')
-//         return done(null, false)
-//       }
-//     })
-//   })
-// }))
+      if(isMatch) return done(null, user)
+      else return done(null, false)
+    })
+  })
+}))
 
 
-// passport.serializeUser(function(user, done) {
-//   done(null, user._id);
-// });
+passport.serializeUser(function(user, done) {
+  done(null, user._id);
+});
 
-// passport.deserializeUser(function(id, done) {
-//   User.findById(id, function(err, user) {
-//     if(user) done(null, user)
-//     else done('no user')
-//   });
-// });
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    if(user) done(null, user)
+    else done('no user')
+  });
+});
 
-// var ensureLoggedIn = function (req, res, next) {
-//   if(!req.isAuthenticated()) res.redirect('/login')
-//   else next()
-// }
+var ensureLoggedIn = function (req, res, next) {
+  if(!req.isAuthenticated()) res.redirect('/login')
+  else next()
+}
 
 /////////////////////////////////////////////////////////////////////
 //routes
@@ -150,13 +137,22 @@ app.get('/', function(request, response) {
   response.render('index')
 });
 
-// app.get('/login', function (req, res) {
-//   res.render('login', {
-//     title: 'Log In'
-//   })
-// })
-// app.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/admin/view', failureRedirect: '/login' }));
+app.get('/login', function (req, res) {
+  res.render('login', {
+    title: 'Log In'
+  })
+})
+app.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/admin', failureRedirect: '/login' }));
 
+app.get('/admin', function (req, res) {
+  var f = ff(function () {
+    Collection.find().populate('pictures').exec(f.slot())
+  }, function (collections) {
+    res.render('admin', {
+      collections: collections
+    })
+  })
+})
 
 ///////////////////////////////////////////////////////////////////
 //the server

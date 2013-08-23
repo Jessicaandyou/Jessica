@@ -1,0 +1,20 @@
+!!!5
+html
+  head
+    title Jessica Frankl
+    link(rel="stylesheet", href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/css/bootstrap.min.css")
+    link(rel='stylesheet', href='/style.css')
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+  body
+    div.container
+      form.loginForm(role='form', action='/login', method='POST')
+        div.form-group
+          label Username
+          input.form-control(placeholder='enter username', name='username')
+        div.form-group
+          label Password
+          input.form-control#url(type='password', placeholder='enter password', name='password')
+        div.clearfix
+          button.btn.btn-primary.pull-right(type='submit', data-loading-text="Logging In...") Log In
+    script.
+      $('[name="username"]').focus()
