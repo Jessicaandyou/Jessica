@@ -67,25 +67,37 @@ ul.main {
   width: 100%;
   font-size: 16px;
 }
-.loginForm {
-  width: 200px;
-  margin: auto auto;
+.loginForm,
+.newPictureForm {
+  margin: 0 auto;
   padding: 10px;
 }
-.loginForm button {
+.loginForm button,
+.newPictureForm button {
   width: 100%;
   background: #333;
   border-color: #111;
 }
-.loginForm button:hover {
+.loginForm button:hover,
+.newPictureForm button:hover {
   background: #222;
   border-color: #000;
 }
-.loginForm button:focus {
+.loginForm button:focus,
+.newPictureForm button:focus {
   background: #333;
   border-color: #333;
   outline-width: 0;
 }
-.loginForm input:focus {
+.loginForm input:focus,
+.newPictureForm input:focus,
+.loginForm textarea:focus,
+.newPictureForm textarea:focus {
   border-color: #666;
+}
+.loginForm {
+  width: 200px;
+}
+.newPictureForm {
+  width: 400px;
 }

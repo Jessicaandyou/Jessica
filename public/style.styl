@@ -61,9 +61,8 @@ ul
   width 100%
   font-size 16px
 
-.loginForm
-  width 200px
-  margin auto auto
+.loginForm, .newPictureForm
+  margin 0 auto
   padding 10px
   button
     width 100%
@@ -76,6 +75,12 @@ ul
       background #333
       border-color #333
       outline-width 0
-  input:focus
-    border-color #666
+  input, textarea
+    &:focus
+      border-color #666
 
+.loginForm
+  width 200px
+
+.newPictureForm
+  width 400px

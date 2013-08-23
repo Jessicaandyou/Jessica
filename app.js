@@ -6,6 +6,8 @@ var express = require("express")
   , LocalStrategy = require('passport-local').Strategy
   , bcrypt = require('bcrypt')
   , SALT_WORK_FACTOR = 10
+  , cloudinary = require('cloudinary')
+  , fs = require('fs')
 
 /////////////////////////////////////////////////////////////////////
 //database stuff
@@ -24,6 +26,16 @@ mongoose.connect(uristring, function (err, res) {
     console.log ('Succeeded connected to: ' + uristring);
   }
 });
+
+/////////////////////////////////////////////////////////////////////
+//cloudinary
+/////////////////////////////////////////////////////////////////////
+cloudinary.config({ 
+  cloud_name: 'hevuo97wt', 
+  api_key: '998917412177184', 
+  api_secret: '0s4KcIeAuFS56mwaa8GFWtoWjY4' 
+});
+
 
 /////////////////////////////////////////////////////////////////////
 //schemas
@@ -74,6 +86,9 @@ var User = mongoose.model('User', userSchema)
 //the app
 /////////////////////////////////////////////////////////////////////
 var app = express();
+
+app.locals.api_key = cloudinary.config().api_key;
+app.locals.cloud_name = cloudinary.config().cloud_name;
 
 function compile (str, path) {
   return stylus(str)
@@ -144,13 +159,32 @@ app.get('/login', function (req, res) {
 })
 app.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/admin', failureRedirect: '/login' }));
 
-app.get('/admin', function (req, res) {
-  var f = ff(function () {
-    Collection.find().populate('pictures').exec(f.slot())
-  }, function (collections) {
-    res.render('admin', {
-      collections: collections
+app.get('/admin', ensureLoggedIn, function(req, res){
+  cloudinary.api.resources(function(items){
+    var f = ff(function () {
+      Picture.find().exec(f.slot())
+    }, function(pictures){
+      res.render('admin', { 
+          images: items.resources
+        , cloudinary: cloudinary
+        , pictures: pictures
+      })
     })
+  })
+})
+
+app.post('/newPicture', ensureLoggedIn, function (req, res) {
+  var f = ff(function () {
+    Collection.findOne({ name: req.body.collectionName }).exec(f.slot())
+    new Picture({
+        url: req.body.pictureUrl
+      , description: req.body.description
+    }).save(f.slot())
+  }, function (collection, picture) {
+    collection.pictures.push(picture)
+    collection.save(f.slot())
+  }, function () {
+    res.redirect('/admin')
   })
 })
 
