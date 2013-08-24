@@ -152,6 +152,23 @@ app.get('/', function(request, response) {
   response.render('index')
 });
 
+app.get('/portfolio', function (req, res) {
+  res.render('portfolio', {
+    title: 'Portfolio - Jessica Frankl'
+  })
+})
+app.get('/bio', function (req, res) {
+  res.render('bio', {
+    title: 'Bio - Jessica Frankl'
+  })
+})
+app.get('/contact', function (req, res) {
+  res.render('contact', {
+    title: 'Contact - Jessica Frankl'
+  })
+})
+
+
 app.get('/login', function (req, res) {
   res.render('login', {
     title: 'Log In'
@@ -159,17 +176,39 @@ app.get('/login', function (req, res) {
 })
 app.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/admin', failureRedirect: '/login' }));
 
-app.get('/admin', ensureLoggedIn, function(req, res){
+app.get('/admin', function (req, res) {
+  var f = ff(function () {
+    Collection.find().populate('pictures').exec(f.slot())
+  }, function (collections) {
+    res.render('admin', {
+        title: 'Admin'
+      , collections: collections
+    })
+  })
+})
+
+app.get('/admin/upload', ensureLoggedIn, function(req, res){
   cloudinary.api.resources(function(items){
     var f = ff(function () {
       Picture.find().exec(f.slot())
     }, function(pictures){
-      res.render('admin', { 
+      res.render('admin_upload', { 
           images: items.resources
         , cloudinary: cloudinary
         , pictures: pictures
       })
     })
+  })
+})
+
+app.post('/newCollection', function (req, res) {
+  var f = ff(function () {
+    new Collection ({
+        name: req.body.name
+      , pictures: []
+    }).save(f.slot())
+  }, function () {
+    res.redirect('/admin')
   })
 })
 

@@ -36,7 +36,8 @@ h1 {
   text-decoration: none;
   color: inherit;
 }
-.head ul li a:hover {
+.head ul li a:hover,
+.head ul li a.active {
   color: #900000;
 }
 .content img {

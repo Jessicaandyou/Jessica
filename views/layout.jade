@@ -1,24 +1,25 @@
 !!!5
 html
   head
-    title Jessica Frankl
+    if !title
+      -title = 'Jessica Frankl'
+    title #{title}
     link(rel='stylesheet', href='/style.css')
     script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
   body
     .container
       .head
         div
-          h1
-            a(href='/')
-            | jessica frankl
+          h1 jessica frankl
         div.right
+          -var menu = { 'Portfolio': '/portfolio', 'Bio': '/bio', 'Contact': '/contact' };
           ul
-            li 
-              a(href='/portfolio') Portfolio
-            li 
-              a(href='/bio') Bio
-            li
-              a(href='/contact') Contact
+            each val, key in menu
+              li
+                if title.indexOf(key)!=-1
+                  a.active(href=val)= key
+                else
+                  a(href=val)= key
       .content
         block content
     .footer

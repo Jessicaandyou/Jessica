@@ -1,0 +1,18 @@
+extend layout
+block content
+  img.active(src='/fav_pic.jpg')
+  img.hidden(src='/edc.jpg')
+  img.hidden(src='/paulhamm.jpg')
+  script.
+    var changePic = function () {
+      console.log('changePic')
+      var active = $('img.active')
+      active.hide().removeClass('active')
+      var next = active.next()
+      console.log(next.prop('tagName'))
+      if(next.prop('tagName')!='IMG') next = $('img').first()
+
+      next.show().addClass('active')
+    }
+
+    window.setInterval(changePic, 5000)
