@@ -176,7 +176,7 @@ app.get('/login', function (req, res) {
 })
 app.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/admin', failureRedirect: '/login' }));
 
-app.get('/admin', function (req, res) {
+app.get('/admin', ensureLoggedIn, function (req, res) {
   var f = ff(function () {
     Collection.find().populate('pictures').exec(f.slot())
   }, function (collections) {
@@ -196,12 +196,13 @@ app.get('/admin/upload', ensureLoggedIn, function(req, res){
           images: items.resources
         , cloudinary: cloudinary
         , pictures: pictures
+        , collectionName: req.query.collection
       })
     })
   })
 })
 
-app.post('/newCollection', function (req, res) {
+app.post('/newCollection', ensureLoggedIn, function (req, res) {
   var f = ff(function () {
     new Collection ({
         name: req.body.name
@@ -212,16 +213,19 @@ app.post('/newCollection', function (req, res) {
   })
 })
 
-app.post('/newPicture', ensureLoggedIn, function (req, res) {
+app.post('/newPictures', ensureLoggedIn, function (req, res) {
   var f = ff(function () {
     Collection.findOne({ name: req.body.collectionName }).exec(f.slot())
-    new Picture({
-        url: req.body.pictureUrl
-      , description: req.body.description
-    }).save(f.slot())
-  }, function (collection, picture) {
+    var group = f.group()
+    
+    req.body.pictureUrls.split(',').forEach(function (picture) {
+      new Picture({
+          url: picture
+      }).save(group())
+    })
+  }, function (collection, pictures) {
     if(collection) {
-      collection.pictures.push(picture)
+      collection.pictures.concat(pictures)
       collection.save(f.slot())
     }
   }, function () {

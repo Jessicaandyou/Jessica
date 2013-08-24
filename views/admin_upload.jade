@@ -12,9 +12,9 @@ html
     script(src='/jquery.cloudinary.js')
     cloudinary.cloudinary_js_config()
   body
-  form.newPictureForm(role='form', action='/newPicture', method='POST', onsubmit='validate()')
+  form.newPictureForm(role='form', action='/newPictures', method='POST', onsubmit='validate()')
     input(type='hidden', name='collectionName', value=collectionName)
-    input(type='hidden', name='pictureUrl', value='')
+    input(type='hidden', name='pictureUrls', value='')
     div.form-group
       label File
       .preview
@@ -26,6 +26,8 @@ html
       button.btn.btn-primary.pull-right(type='submit', data-loading-text="Logging In...") Save Picture
   script.
     var uploaded = false
+      , urls = []
+
     // Configure Cloudinary
     $.cloudinary.config({ api_key: '!{api_key}', cloud_name: '!{cloud_name}' })
 
@@ -40,12 +42,13 @@ html
       $('.cloudinary-fileupload').hide()
 
       console.log(JSON.stringify(data.result))
-
-      $('[name="pictureUrl"]').attr('value', data.result.url)
-
+      urls.push(data.result.url)
       return true
     })
 
     function validate() {
-      return uploaded
+      if(!urls.length) return false
+
+      $('[name="pictureUrls"]').attr('value', urls.join(','))
+      return true
     }
