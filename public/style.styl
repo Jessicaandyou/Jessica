@@ -1,8 +1,6 @@
-@import url("http://fonts.googleapis.com/css?family=Trykker")
-
 body
   margin 0
-  font-family Trykker
+  font-family Helvetica
   user-select none
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -16,38 +14,29 @@ body
 h1 
   margin 0
 
+.container
+  max-width 800px
+  margin 0 auto
+
 .head
-  position fixed
-  top 0
-  height 100px
-  font-size 30px
+  div
+    float left
+  .right
+    float right
+  ul
+    list-style-type none
+    li
+      display inline
+      padding 10px
+      a
+        text-decoration none
+        color inherit
+        &:hover
+          color #900000
 
-.left
-  position fixed
-  left 0
-  top 100px
-  width 200px
-
-.right
-  padding 100px 175px 0
-  height 100%
+.content
   img
-    width: 700px
-
-ul
-  list-style-type none
-  padding-left 10px
-  &.main, &.secondary
-    li:hover
-        color #ff0000
-        cursor pointer
-    font-size 18px
-  &.main
-    margin-top 0
-
-.sub
-  font-size 16px
-  margin 5px
+    width: 800px
 
 .hidden
   display none
