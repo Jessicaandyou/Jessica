@@ -12,41 +12,21 @@ html
     script(src='/jquery.cloudinary.js')
     cloudinary.cloudinary_js_config()
   body
-  form.newPictureForm(role='form', action='/newPicture', method='POST', onsubmit='validate()')
-    input(type='hidden', name='collectionName', value=collectionName)
-    input(type='hidden', name='pictureUrl', value='')
-    div.form-group
-      label File
-      .preview
-      !=cloudinary.uploader.image_upload_tag('image')
-    div.form-group
-      label Caption
-      textarea.form-control(name='description', placeholder='optional...')
-    div.clearfix
-      button.btn.btn-primary.pull-right(type='submit', data-loading-text="Logging In...") Save Picture
-  script.
-    var uploaded = false
-    // Configure Cloudinary
-    $.cloudinary.config({ api_key: '!{api_key}', cloud_name: '!{cloud_name}' })
-
-    $('.cloudinary-fileupload').bind('fileuploadstart', function(e){
-      $('.preview').html('Uploading...')
-      uploaded = false
-    })
-
-    $('.cloudinary-fileupload').bind('cloudinarydone', function(e, data){
-      uploaded = true
-      $('.preview').html('Finished Uploading')
-      $('.cloudinary-fileupload').hide()
-
-      console.log(JSON.stringify(data.result))
-
-      $('[name="pictureUrl"]').attr('value', data.result.url)
-
-      return true
-    })
-
-    function validate() {
-      return uploaded
-    }
-
+    each collection in collections
+      div.collection
+        h1 #{collection.name}
+        ul
+        each picture in collection.pictures
+          li
+            img(src=picture.url)
+        a(href='admin/upload?collection='+collection.name) Add pictures to this collection
+    form.newPictureForm(role='form', action='/newCollection', method='POST', onsubmit='return validate()')
+      div.form-group
+        label Create a Collection
+        input.form-control(name='name', placeholder='name...')
+      div.clearfix
+        button.btn.btn-primary.pull-right(type='submit', data-loading-text="Creating Collection...") Create Collection
+    script.
+      function validate() {
+        return $('[name="name"]').text().length
+      }
