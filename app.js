@@ -82,11 +82,6 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 }
 var User = mongoose.model('User', userSchema)
 
-var f = ff(function () {
-  User.find().exec(f.slot())
-}, function (u) {
-  console.log(JSON.stringify(u))
-})
 /////////////////////////////////////////////////////////////////////
 //the app
 /////////////////////////////////////////////////////////////////////
@@ -100,7 +95,6 @@ function compile (str, path) {
     .set('filename', path)
 }
 
-console.log('dirname: '+__dirname)
 app.use(express.logger())
   .set('views', __dirname + '/views')
   .set('view engine', 'jade')
@@ -139,9 +133,10 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
+  console.log('trying to deserializeUser with id: '+id)
   User.findById(id, function(err, user) {
-    if(user) done(null, user)
-    else done('no user')
+    console.log('found user? : '+JSON.stringify(user))
+    return done(err, user)
   });
 });
 
@@ -181,9 +176,7 @@ app.get('/contact', function (req, res) {
 app.get('/portfolio/:collectionName', function (req, res) {
   var f = ff(function () {
     Collection.findOne({name: new RegExp(req.params.collectionName, 'i')}).populate('pictures').exec(f.slot())
-    console.log('\n\n\n\n'+req.params.collectionName)
   }, function (collection) {
-    console.log('found collection: '+JSON.stringify(collection))
     res.render('collection', {
         title: 'Portfolio - Jessica Frankl'
       , collection: collection
@@ -203,11 +196,6 @@ app.get('/admin', ensureLoggedIn, function (req, res) {
   var f = ff(function () {
     Collection.find().populate('pictures').exec(f.slot())
   }, function (collections) {
-    collections.forEach(function (c) {
-      console.log('loading')
-      console.log('collection: '+c.name)
-      console.log('num pictures: '+c.pictures.length)
-    })
     res.render('admin', {
         title: 'Admin'
       , collections: collections
