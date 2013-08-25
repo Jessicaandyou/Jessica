@@ -12,21 +12,30 @@ html
     script(src='/jquery.cloudinary.js')
     cloudinary.cloudinary_js_config()
   body
-    each collection in collections
-      div.collection
-        h1 #{collection.name}
-        ul.pictureThumbnails
-          each picture in collection.pictures
-            li
-              img(src=picture.url, height='100')
-        a(href='admin/upload?collection='+collection.name) Add pictures to this collection
-    form.newPictureForm(role='form', action='/newCollection', method='POST', onsubmit='return validate()')
-      div.form-group
-        label Create a Collection
-        input.form-control(name='name', placeholder='name...')
-      div.clearfix
-        button.btn.btn-primary.pull-right(type='submit', data-loading-text="Creating Collection...") Create Collection
+    a(href='/') Return to the site
+    .container
+      each collection in collections
+        div.collection
+          h1 #{collection.name}
+          form(action='/removeCollection?collectionName='+collection.name, method='POST', onsubmit='return removeCollectionValidation()')
+            button.btn.btn-default
+              span.glyphicon.glyphicon-remove
+          ul.pictureThumbnails
+            each picture in collection.pictures
+              li
+                a(href=picture.url)
+                  img(src=picture.url, height='100')
+          a(href='admin/upload?collection='+collection.name) Add pictures to this collection
+      form.newPictureForm(role='form', action='/newCollection', method='POST', onsubmit='return validate()')
+        div.form-group
+          label Create a Collection
+          input.form-control(name='name', placeholder='name...')
+        div.clearfix
+          button.btn.btn-primary.pull-right(type='submit', data-loading-text="Creating Collection...") Create Collection
     script.
       function validate() {
         return $('[name="name"]').text().length
+      }
+      function removeCollectionValidation() {
+        return confirm("Are you sure you want to delete this collection?\nThis action cannot be undone");
       }

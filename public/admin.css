@@ -5,3 +5,17 @@
   display: inline;
   padding-right: 10px;
 }
+.collection {
+  margin: 10px;
+  border: 1px solid #000;
+  border-radius: 4px;
+  position: relative;
+}
+.collection h1 {
+  text-align: center;
+}
+.collection form {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

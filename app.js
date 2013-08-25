@@ -82,10 +82,11 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 }
 var User = mongoose.model('User', userSchema)
 
-new User({
-    username: 'd'
-  , password: '1'
-}).save()
+var f = ff(function () {
+  User.find().exec(f.slot())
+}, function (u) {
+  console.log(JSON.stringify(u))
+})
 /////////////////////////////////////////////////////////////////////
 //the app
 /////////////////////////////////////////////////////////////////////
@@ -157,8 +158,13 @@ app.get('/', function(request, response) {
 });
 
 app.get('/portfolio', function (req, res) {
-  res.render('portfolio', {
-    title: 'Portfolio - Jessica Frankl'
+  var f = ff(function () {
+    Collection.find().exec(f.slot())
+  }, function (collections) {
+    res.render('portfolio', {
+        title: 'Portfolio - Jessica Frankl'
+      , collections: collections
+    })
   })
 })
 app.get('/bio', function (req, res) {
@@ -169,6 +175,19 @@ app.get('/bio', function (req, res) {
 app.get('/contact', function (req, res) {
   res.render('contact', {
     title: 'Contact - Jessica Frankl'
+  })
+})
+
+app.get('/portfolio/:collectionName', function (req, res) {
+  var f = ff(function () {
+    Collection.findOne({name: new RegExp(req.params.collectionName, 'i')}).populate('pictures').exec(f.slot())
+    console.log('\n\n\n\n'+req.params.collectionName)
+  }, function (collection) {
+    console.log('found collection: '+JSON.stringify(collection))
+    res.render('collection', {
+        title: 'Portfolio - Jessica Frankl'
+      , collection: collection
+    })
   })
 })
 
@@ -222,6 +241,14 @@ app.post('/newCollection', ensureLoggedIn, function (req, res) {
   })
 })
 
+app.post('/removeCollection', ensureLoggedIn, function (req, res) {
+  var f = ff(function () {
+    Collection.findOneAndRemove({name: req.query.collectionName}, f.slot())
+  }, function () {
+    res.redirect('/admin')
+  })
+})
+
 app.post('/newPictures', ensureLoggedIn, function (req, res) {
   var f = ff(function () {
     Collection.findOne({ name: req.body.collectionName }).exec(f.slot())
@@ -237,13 +264,9 @@ app.post('/newPictures', ensureLoggedIn, function (req, res) {
       pictures.forEach(function (p) {
         collection.pictures.push(p)
       })
-      
-      console.log('number of pictures in collection: '+collection.pictures.length)
       collection.save(f.slot())
     }
   }, function (collection) {
-    console.log('and now: '+collection.pictures.length)
-    console.log('the collection: '+JSON.stringify(collection))
     res.redirect('/admin')
   })
 })

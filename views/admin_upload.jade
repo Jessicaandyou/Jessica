@@ -20,9 +20,6 @@ html
       .preview
       .status Uploading...
       !=cloudinary.uploader.image_upload_tag('image')
-    div.form-group
-      label Caption
-      textarea.form-control(name='description', placeholder='optional...')
     div.clearfix
       button.btn.btn-primary.pull-right(type='submit', data-loading-text="Logging In...") Save Picture
   script.

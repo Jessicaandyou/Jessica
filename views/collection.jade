@@ -1,0 +1,25 @@
+extend layout
+block content
+  h2.collectionHead #{collection.name}
+  -var picture1 = collection.pictures[0]
+  -var otherPictures = collection.pictures.slice(1)
+  img.active(src='#{picture1.url}')
+  each picture in otherPictures
+    img.hidden(src=picture.url)
+  script.
+    $(document).ready(function () {
+      $('img').first().removeClass('hidden').addClass('active')
+    })
+
+    var changePic = function () {
+      console.log('changePic')
+      var active = $('img.active')
+      active.hide().removeClass('active')
+      var next = active.next()
+      console.log(next.prop('tagName'))
+      if(next.prop('tagName')!='IMG') next = $('img').first()
+
+      next.show().addClass('active')
+    }
+
+    window.setInterval(changePic, 5000)

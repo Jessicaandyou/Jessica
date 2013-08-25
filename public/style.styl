@@ -16,6 +16,12 @@ body
 h1 
   margin 0
 
+h2
+  font-size 18px
+
+.collectionHead
+  text-align center
+
 .container
   max-width 800px
   margin 0 auto
@@ -38,7 +44,8 @@ h1
 
 .content
   img
-    width: 800px
+    width 800px
+    max-height 800px
 
 .hidden
   display none
@@ -75,3 +82,12 @@ h1
 
 .newPictureForm
   width 400px
+
+.clearfix:before,.clearfix:after
+  display table
+  content " "
+.clearfix:after
+  clear both
+
+
+
