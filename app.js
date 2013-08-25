@@ -36,6 +36,11 @@ cloudinary.config({
   api_secret: '0s4KcIeAuFS56mwaa8GFWtoWjY4' 
 });
 
+var pictureSchema = new mongoose.Schema({
+    url: { type: String, required: true }
+  , description: String
+})
+var Picture = mongoose.model('Picture', pictureSchema)
 
 /////////////////////////////////////////////////////////////////////
 //schemas
@@ -47,16 +52,11 @@ var collectionSchema = new mongoose.Schema({
 })
 var Collection = mongoose.model('Collection', collectionSchema)
 
-var pictureSchema = new mongoose.Schema({
-    url: { type: String, required: true }
-  , description: String
-})
-var Picture = mongoose.model('Picture', pictureSchema)
-
 var userSchema = new mongoose.Schema({
     username: { type: String, required: true, index: { unique: true } }
   , password: { type: String, required: true }
 })
+
 userSchema.pre('save', function (next) {
   var user = this
 
@@ -82,6 +82,10 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 }
 var User = mongoose.model('User', userSchema)
 
+new User({
+    username: 'd'
+  , password: '1'
+}).save()
 /////////////////////////////////////////////////////////////////////
 //the app
 /////////////////////////////////////////////////////////////////////
@@ -180,6 +184,11 @@ app.get('/admin', ensureLoggedIn, function (req, res) {
   var f = ff(function () {
     Collection.find().populate('pictures').exec(f.slot())
   }, function (collections) {
+    collections.forEach(function (c) {
+      console.log('loading')
+      console.log('collection: '+c.name)
+      console.log('num pictures: '+c.pictures.length)
+    })
     res.render('admin', {
         title: 'Admin'
       , collections: collections
@@ -225,10 +234,16 @@ app.post('/newPictures', ensureLoggedIn, function (req, res) {
     })
   }, function (collection, pictures) {
     if(collection) {
-      collection.pictures.concat(pictures)
+      pictures.forEach(function (p) {
+        collection.pictures.push(p)
+      })
+      
+      console.log('number of pictures in collection: '+collection.pictures.length)
       collection.save(f.slot())
     }
-  }, function () {
+  }, function (collection) {
+    console.log('and now: '+collection.pictures.length)
+    console.log('the collection: '+JSON.stringify(collection))
     res.redirect('/admin')
   })
 })

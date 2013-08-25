@@ -1,0 +1,7 @@
+.pictureThumbnails {
+  list-style-type: none;
+}
+.pictureThumbnails li {
+  display: inline;
+  padding-right: 10px;
+}

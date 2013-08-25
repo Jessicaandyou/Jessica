@@ -18,6 +18,7 @@ html
     div.form-group
       label File
       .preview
+      .status Uploading...
       !=cloudinary.uploader.image_upload_tag('image')
     div.form-group
       label Caption
@@ -28,18 +29,23 @@ html
     var uploaded = false
       , urls = []
 
+    $('.status').hide()
     // Configure Cloudinary
     $.cloudinary.config({ api_key: '!{api_key}', cloud_name: '!{cloud_name}' })
 
     $('.cloudinary-fileupload').bind('fileuploadstart', function(e){
-      $('.preview').html('Uploading...')
+      $('.status').show()
       uploaded = false
     })
 
+    function getPic(url) {
+      return '<img src="'+url+'" height="100">'
+    }
+
     $('.cloudinary-fileupload').bind('cloudinarydone', function(e, data){
       uploaded = true
-      $('.preview').html('Finished Uploading')
-      $('.cloudinary-fileupload').hide()
+      $('.preview').append(getPic(data.result.url))
+      $('.status').hide()
 
       console.log(JSON.stringify(data.result))
       urls.push(data.result.url)

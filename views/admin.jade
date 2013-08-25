@@ -15,10 +15,10 @@ html
     each collection in collections
       div.collection
         h1 #{collection.name}
-        ul
-        each picture in collection.pictures
-          li
-            img(src=picture.url)
+        ul.pictureThumbnails
+          each picture in collection.pictures
+            li
+              img(src=picture.url, height='100')
         a(href='admin/upload?collection='+collection.name) Add pictures to this collection
     form.newPictureForm(role='form', action='/newCollection', method='POST', onsubmit='return validate()')
       div.form-group
