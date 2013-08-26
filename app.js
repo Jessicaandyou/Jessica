@@ -133,12 +133,22 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
+  var f = ff(function () {
   console.log('trying to deserializeUser with id: '+id)
-  User.findById(id, function(err, user) {
-    console.log('args: '+JSON.stringify(arguments))
-    console.log('found user? : '+JSON.stringify(user))
-    return done(err, user)
-  });
+  User.findById(id).exec(f.slot())
+  User.findOne({username:'david'}).exec(f.slot())
+  }, function (user1, user2)) {
+    console.log('found by ID: '+JSON.stringify(user1))
+    console.log('found by name: '+JSOn.stringify(user2))
+    if(user1) return done(null, user1)
+    if(user2) return done(null, user2)
+    else return done('couldnt find user')
+  }
+  // User.findById(id, function(err, user) {
+  //   console.log('args: '+JSON.stringify(arguments))
+  //   console.log('found user? : '+JSON.stringify(user))
+  //   return done(err, user)
+  // });
 });
 
 var ensureLoggedIn = function (req, res, next) {
