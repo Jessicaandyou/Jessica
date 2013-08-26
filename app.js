@@ -135,6 +135,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(id, done) {
   console.log('trying to deserializeUser with id: '+id)
   User.findById(id, function(err, user) {
+    console.log('args: '+JSON.stringify(arguments))
     console.log('found user? : '+JSON.stringify(user))
     return done(err, user)
   });
