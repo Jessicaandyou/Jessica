@@ -138,11 +138,8 @@ passport.deserializeUser(function(id, done) {
   User.findById(id).exec(f.slot())
   User.findOne({username:'david'}).exec(f.slot())
   }, function (user1, user2) {
-    console.log('found by ID: '+JSON.stringify(user1))
-    console.log('found by name: '+JSON.stringify(user2))
-    if(user1) return done(null, user1)
-    // if(user2) return done(null, user2)
-    else return done('couldnt find user')
+    console.log('args: '+arguments)
+    return done('couldnt find user')
   })
   // User.findById(id, function(err, user) {
   //   console.log('args: '+JSON.stringify(arguments))
