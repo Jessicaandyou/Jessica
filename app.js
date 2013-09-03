@@ -73,6 +73,7 @@ userSchema.pre('save', function (next) {
     })
   })
 })
+
 userSchema.methods.comparePassword = function (candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
     if(err) return cb(err)
@@ -113,39 +114,45 @@ app.use(express.logger())
 //authentication
 /////////////////////////////////////////////////////////////////////
 passport.use(new LocalStrategy(function (username, password, done) {
+  console.log('\n\n\nin LOCAL Strategy \n\n\n\n\n')
   var f = ff(function () {
     User.findOne({username: username}, f.slot())
   }, function (user) {
-    if(!user) return done(null, false)
+    if(!user) {
+      console.log('no user')
+      return done(null, false)
+    }
 
     user.comparePassword(password, function (err, isMatch) {
-      if(err) return done(err)
+      if(err) {
+        console.log('err in comparing password')
+        return done(err)
+      }
 
-      if(isMatch) return done(null, user)
-      else return done(null, false)
+      if(isMatch) {
+        console.log('IS MATCH')
+        return done(null, user)
+      }
+      else {
+        console.log('IS NOT MATCH')
+        return done(null, false)
+      }
     })
   })
 }))
 
-
 passport.serializeUser(function(user, done) {
+  console.log('\n\n\nserializeUser '+JSON.stringify(user)+'\n\n\n')
   done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
-  var f = ff(function () {
-  console.log('trying to deserializeUser with id: '+id)
-  User.findById(id).exec(f.slot())
-  User.findOne({username:'david'}).exec(f.slot())
-  }, function (user1, user2) {
-    console.log('args: '+JSON.stringify(arguments))
-    return done('couldnt find user')
-  })
-  // User.findById(id, function(err, user) {
-  //   console.log('args: '+JSON.stringify(arguments))
-  //   console.log('found user? : '+JSON.stringify(user))
-  //   return done(err, user)
-  // });
+  console.log('\n\n\ndeserializeUser '+id+'\n\n\n')
+  User.findById(id, function(err, user) {
+    console.log('found '+JSON.stringify(user))
+
+    done(null, user)
+  });
 });
 
 var ensureLoggedIn = function (req, res, next) {
