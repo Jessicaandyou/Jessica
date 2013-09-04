@@ -8,21 +8,21 @@
 #prev,
 #next {
   position: absolute;
-  top: 40%;
+  top: 50%;
   background: rgba(255,255,255,0.3);
   width: 100px;
   height: 100px;
+  margin-top: -50px;
   border: 1px solid #000;
   display: none;
 }
 #prev:hover,
 #next:hover {
-  background: #fff;
-  border: 1px solid #000;
+  background: rgba(255,255,255,0.8);
 }
 #prev:active,
 #next:active {
-  background: rgba(255,255,255,0.3);
+  background: #fff;
 }
 #prev {
   left: 0;

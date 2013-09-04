@@ -1,5 +1,10 @@
 extend layout
+
+block links
+  link(rel='stylesheet', href='/portfolio.css')
 block content
   each collection in collections
     - var path = '/portfolio/'+collection.name.toLowerCase()
-    p: a(href=path) #{collection.name}
+    - var backgroundImage = collection.pictures[0]? 'background-image:url('+ collection.pictures[0].url+')' : ''
+    div.collection(style=backgroundImage)
+      h2 #{collection.name}

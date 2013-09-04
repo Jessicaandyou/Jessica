@@ -169,7 +169,7 @@ app.get('/', function(request, response) {
 
 app.get('/portfolio', function (req, res) {
   var f = ff(function () {
-    Collection.find().exec(f.slot())
+    Collection.find().populate('pictures').exec(f.slot())
   }, function (collections) {
     res.render('portfolio', {
         title: 'Portfolio - Jessica Frankl'

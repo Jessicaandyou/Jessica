@@ -12,6 +12,15 @@ body {
   -o-user-select: none;
   user-select: none;
 }
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+  color: inherit;
+  text-decoration: inherit;
+}
 h1 {
   margin: 0;
   padding-top: 15px;

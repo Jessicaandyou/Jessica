@@ -16,9 +16,17 @@ block content
     div#next
       img.glyph(src='/glyphicons_211_right_arrow.png')
   script.
+    var interval
+
     $(document).ready(function () {
       $('img').first().removeClass('hidden').addClass('active')
+      resetInterval()
     })
+
+    var resetInterval = function () {
+      window.clearInterval(interval)
+      interval = window.setInterval(changePic, 5000)
+    }
 
     var changePic = function (isLeft) {
       console.log('changePic')
@@ -26,9 +34,11 @@ block content
       active.hide().removeClass('active')
       var next = isLeft? active.prev() : active.next()
       console.log(next.prop('tagName'))
-      if(next.prop('tagName')!='IMG') next = isRight? $('.main').first() : $('.main').last()
+      if(next.prop('tagName')!='IMG') next = isLeft? $('.main').last() : $('.main').first()
 
       next.show().addClass('active')
+
+      resetInterval()
     }
 
     $('#prev').click(function () {
@@ -37,6 +47,4 @@ block content
     $('#next').click(function () {
       changePic()
     })
-
-    window.setInterval(changePic, 5000)
 
