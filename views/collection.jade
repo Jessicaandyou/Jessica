@@ -20,11 +20,11 @@ block content
       $('img').first().removeClass('hidden').addClass('active')
     })
 
-    var changePic = function (isRight) {
+    var changePic = function (isLeft) {
       console.log('changePic')
       var active = $('img.active')
       active.hide().removeClass('active')
-      var next = isRight? active.next() : active.prev()
+      var next = isLeft? active.prev() : active.next()
       console.log(next.prop('tagName'))
       if(next.prop('tagName')!='IMG') next = isRight? $('.main').first() : $('.main').last()
 
@@ -35,7 +35,7 @@ block content
       changePic(true)
     })
     $('#next').click(function () {
-      changePic(false)
+      changePic()
     })
 
     window.setInterval(changePic, 5000)
