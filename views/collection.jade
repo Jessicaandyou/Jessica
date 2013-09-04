@@ -1,25 +1,42 @@
 extend layout
+
+block links
+  link(rel='stylesheet', href='/collection.css')
+
 block content
   h2.collectionHead #{collection.name}
   -var picture1 = collection.pictures[0]
   -var otherPictures = collection.pictures.slice(1)
-  img.active(src='#{picture1.url}')
-  each picture in otherPictures
-    img.hidden(src=picture.url)
+  div#picContainer
+    img.main.active(src='#{picture1.url}')
+    each picture in otherPictures
+      img.main.hidden(src=picture.url)
+    div#prev
+      img.glyph(src='/glyphicons_210_left_arrow.png')
+    div#next
+      img.glyph(src='/glyphicons_211_right_arrow.png')
   script.
     $(document).ready(function () {
       $('img').first().removeClass('hidden').addClass('active')
     })
 
-    var changePic = function () {
+    var changePic = function (isRight) {
       console.log('changePic')
       var active = $('img.active')
       active.hide().removeClass('active')
-      var next = active.next()
+      var next = isRight? active.next() : active.prev()
       console.log(next.prop('tagName'))
-      if(next.prop('tagName')!='IMG') next = $('img').first()
+      if(next.prop('tagName')!='IMG') next = isRight? $('.main').first() : $('.main').last()
 
       next.show().addClass('active')
     }
 
+    $('#prev').click(function () {
+      changePic(true)
+    })
+    $('#next').click(function () {
+      changePic(false)
+    })
+
     window.setInterval(changePic, 5000)
+
