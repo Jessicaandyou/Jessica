@@ -5,6 +5,7 @@ html
       -title = 'Jessica Frankl'
     title #{title}
     link(rel='stylesheet', href='/style.css')
+    link(rel='stylesheet', href='/font-awesome.css')
     script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
     block links
     
@@ -12,16 +13,22 @@ html
     .container
       .head.clearfix
         div
-          h1 Jessica Frankl
+          h1 
+            a(href='/') Jessica Frankl
         div.right
           -var menu = { 'Portfolio': '/portfolio', 'Bio': '/bio', 'Contact': '/contact' };
-          ul
+          ul.navLinks
             each val, key in menu
-              li
-                if title.indexOf(key)!=-1
-                  a.active(href=val)= key
-                else
-                  a(href=val)= key
+              - var className = title.indexOf(key)==-1? '': 'active'
+              - liClass = key=='Portfolio'? 'portfolio' : ''
+              li(class=liClass)
+                a(class=className, href=val)= key
+                if key=='Portfolio'
+                  ul.subnavLinks
+                    each collection in collections
+                      li 
+                        - var href = '/portfolio/'+collection.name.toLowerCase()
+                        a(href=href)= collection.name
       .content
         block content
     .footer

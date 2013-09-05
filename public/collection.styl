@@ -6,31 +6,23 @@
 
 #prev, #next
   position absolute
-  top 50%
-  background rgba(255, 255, 255, .3)
+  top 0
+  height 100%
   width 100px
-  height 100px
-  margin-top -50px
-  border 1px solid #000
+  // background #555
   display none
   &:hover
-    background rgba(255, 255, 255, .8)
+    background rgba(0,0,0, .3)
   &:active
-    background rgba(255, 255, 255, 1)
+    background rgba(0,0,0, .5)
 
 #prev
   left 0
-  border-left 0
-  border-top-right-radius 5px
-  border-bottom-right-radius 5px
 
 #next
   right 0
-  border-right 0
-  border-top-left-radius 5px
-  border-bottom-left-radius 5px
 
-.glyph
+i
   position absolute
   left 50%
   margin-left -15px

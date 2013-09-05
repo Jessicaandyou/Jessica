@@ -6,5 +6,9 @@ block content
   each collection in collections
     - var path = '/portfolio/'+collection.name.toLowerCase()
     - var backgroundImage = collection.pictures[0]? 'background-image:url('+ collection.pictures[0].url+')' : ''
-    div.collection(style=backgroundImage)
+    div.collection(style=backgroundImage, path=path)
       h2 #{collection.name}
+  script.
+    $('.collection').click(function () {
+      window.location = $(this).attr('path')
+    })

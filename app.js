@@ -96,6 +96,16 @@ function compile (str, path) {
     .set('filename', path)
 }
 
+//Custom middleware
+var getCollections = function (req, res, next) {
+  var f = ff(function () {
+    Collection.find().exec(f.slot())
+  }, function (collections) {
+    res.locals.collections = collections
+    next()
+  })
+}
+
 app.use(express.logger())
   .set('views', __dirname + '/views')
   .set('view engine', 'jade')
@@ -109,6 +119,7 @@ app.use(express.logger())
   .use(express.session({ secret: 'wut am i doing' }))
   .use(passport.initialize())
   .use(passport.session())
+  .use(getCollections)
 
 /////////////////////////////////////////////////////////////////////
 //authentication
@@ -167,7 +178,7 @@ app.get('/', function(request, response) {
   response.render('index')
 });
 
-app.get('/portfolio', function (req, res) {
+app.get('/portfolio', getCollections, function (req, res) {
   var f = ff(function () {
     Collection.find().populate('pictures').exec(f.slot())
   }, function (collections) {

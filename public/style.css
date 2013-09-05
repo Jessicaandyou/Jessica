@@ -49,10 +49,6 @@ h2 {
   list-style-type: none;
   padding-top: 10px;
 }
-.head ul li {
-  display: inline;
-  padding: 10px;
-}
 .head ul li a {
   text-decoration: none;
   color: inherit;
@@ -60,6 +56,29 @@ h2 {
 .head ul li a:hover,
 .head ul li a.active {
   color: #900000;
+}
+.head ul.navLinks > li {
+  display: inline;
+  padding: 10px;
+  position: relative;
+}
+.head ul.subnavLinks {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 0;
+  padding: 0 10px;
+  z-index: 2;
+  background: #fff;
+}
+.head ul.subnavLinks li {
+  padding-bottom: 10px;
+}
+.portfolio li {
+  display: none;
+}
+.portfolio:hover li {
+  display: block;
 }
 .content {
   padding-top: 10px;

@@ -44,13 +44,34 @@ h2
     list-style-type none
     padding-top 10px
     li
-      display inline
-      padding 10px
       a
         text-decoration none
         color inherit
         &:hover, &.active
           color activeColor
+    &.navLinks > li
+      display inline
+      padding 10px
+      position relative
+    &.subnavLinks
+      // display none
+      position absolute
+      top 100%
+      left 0
+      margin 0
+      padding 0 10px
+      z-index 2
+      background #fff
+      li
+        padding-bottom 10px
+
+.portfolio li
+  display none
+
+.portfolio:hover li
+  display block
+
+
 
 .content
   padding-top 10px
