@@ -53,9 +53,12 @@ h2 {
   text-decoration: none;
   color: inherit;
 }
-.head ul li a:hover,
-.head ul li a.active {
+.head ul li:hover,
+.head ul li.active {
   color: #900000;
+}
+.head ul li li {
+  color: #000;
 }
 .head ul.navLinks > li {
   display: inline;
@@ -141,4 +144,10 @@ h2 {
 }
 .clearfix:after {
   clear: both;
+}
+p {
+  font-size: 20px;
+  text-indent: 2em;
+  line-height: 1.5;
+  font-family: georgia;
 }
