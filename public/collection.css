@@ -27,10 +27,9 @@
 #next {
   right: 0;
 }
-i {
+i[class^='icon-'] {
   position: absolute;
   left: 50%;
-  margin-left: -15px;
   top: 50%;
-  margin-top: -15px;
+  margin: -15px 0 0 -15px;
 }
