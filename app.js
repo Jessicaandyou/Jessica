@@ -178,10 +178,42 @@ app.get('/', function(request, response) {
   response.render('index')
 });
 
+var convertWidth = function (width, url) {
+  var arr = url.split('upload/')
+  return (arr[0] + 'upload/w_' + width + '/'+arr[1])
+}
 app.get('/portfolio', getCollections, function (req, res) {
   var f = ff(function () {
     Collection.find().populate('pictures').exec(f.slot())
   }, function (collections) {
+    var divWidth = 800
+
+    collections = collections.map(function (c) {
+      if(c.pictures.length<5) {
+        var width = Math.floor(divWidth/c.pictures.length)
+        c.pictures = c.pictures.map(function (p) {
+          p.url = convertWidth(width, p.url)
+          return p
+        })
+
+        return c
+      }
+
+      for(var i=0; i<5; i++) {
+        var rand = Math.floor(Math.random()*(c.pictures.length-i))+i
+        var temp = c.pictures[i]
+        c.pictures[i] = c.pictures[rand]
+        c.pictures[rand] = temp
+      }
+
+      var width = Math.floor(divWidth/5)
+      c.pictures = c.pictures.slice(0,5).map(function (p) {
+        p.url = convertWidth(width, p.url)
+        return p
+      })
+      return c
+    })
+
     res.render('portfolio', {
         title: 'Portfolio - Jessica Frankl'
       , collections: collections

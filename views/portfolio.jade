@@ -5,9 +5,12 @@ block links
 block content
   each collection in collections
     - var path = '/portfolio/'+collection.name.toLowerCase()
-    - var backgroundImage = collection.pictures[0]? 'background-image:url('+ collection.pictures[0].url+')' : ''
-    div.collection(style=backgroundImage, path=path)
+    div.collection(path=path)
       h2 #{collection.name}
+      - var width = Math.floor(800/collection.pictures.length)+'px'
+      each p in collection.pictures
+        - var backgroundImage = 'background-image:url('+ p.url+')'
+        div.pic(style=backgroundImage+'; width: '+width)
   script.
     $('.collection').click(function () {
       window.location = $(this).attr('path')
